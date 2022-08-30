@@ -92,7 +92,7 @@ class BaseEngine(object):
                                                                 :4], dets[:, 4], dets[:, 5]
                 frame = vis(frame, final_boxes, final_scores, final_cls_inds,
                                 conf=conf, class_names=self.class_names)
-            cv2.imshow('frame', frame)
+            #cv2.imshow('frame', frame)
             out.write(frame)
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 break
@@ -324,7 +324,7 @@ def vis(img, boxes, scores, cls_ids, conf=0.5, class_names=None):
         y1 = int(box[3])
 
         color = (_COLORS[cls_id] * 255).astype(np.uint8).tolist()
-        text = '{}:{:.1f}%'.format(class_names[cls_id], score * 100)
+        text = '{} {:.2f}'.format(class_names[cls_id], score)
         txt_color = (0, 0, 0) if np.mean(_COLORS[cls_id]) > 0.5 else (255, 255, 255)
         font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -334,11 +334,11 @@ def vis(img, boxes, scores, cls_ids, conf=0.5, class_names=None):
         txt_bk_color = (_COLORS[cls_id] * 255 * 0.7).astype(np.uint8).tolist()
         cv2.rectangle(
             img,
-            (x0, y0 + 1),
-            (x0 + txt_size[0] + 1, y0 + int(1.5 * txt_size[1])),
+            (x0, y0 - 1),
+            (x0 + txt_size[0] + 1, y0 - int(1.5 * txt_size[1])),
             txt_bk_color,
             -1
         )
-        cv2.putText(img, text, (x0, y0 + txt_size[1]), font, 0.4, txt_color, thickness=1)
+        cv2.putText(img, text, (x0, y0 - txt_size[1] + 5), font, 0.4, txt_color, 1, cv2.LINE_AA)
 
     return img
