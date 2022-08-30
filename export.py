@@ -163,7 +163,10 @@ class EngineBuilder:
             # [0, 0, 5] [1, 8400, 80] [1, 1, 1]
             scores = self.network.add_slice(previous_output, starts, shapes, strides)
             # scores = obj_score * class_scores => [bs, num_boxes, nc]
-            updated_scores = self.network.add_elementwise(obj_score.get_output(0), scores.get_output(0), trt.ElementWiseOperation.PROD)
+            if num_classes == 1:
+                updated_scores = obj_score
+            else:
+                updated_scores = self.network.add_elementwise(obj_score.get_output(0), scores.get_output(0), trt.ElementWiseOperation.PROD)
 
             '''
             "plugin_version": "1",
